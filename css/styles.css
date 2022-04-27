@@ -1,0 +1,75 @@
+body {
+  background-color:#ffffff;
+  user-select: none;
+}
+img {
+  -webkit-user-drag: none;
+}
+table {
+  margin: auto;
+  border-collapse: collapse;
+  position: relative;
+}
+table,
+th,
+td {
+    border: 1px solid black;
+    text-align: center;
+}
+h1 {
+  text-align: center;
+	font-family: arial;
+  padding: 20px;
+  margin: 10px;
+  font-size: 50px;
+}
+button {
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+	font-family: arial;
+  font-size: 20px;
+}
+.playing-now {
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
+	font-family: arial;
+  font-size: 35px;
+}
+
+.light-cell {
+  background: #cfdbeb;
+  width: 70px;
+  height: 70px;
+}
+
+.dark-cell {
+  background: #8ba2c0;
+  width: 70px;
+  height: 70px;
+}
+
+.selected {
+  background-color: #414040;
+}
+.possible-move {
+  background-color: #ea983a;
+}
+.enemy {
+  background-color: #e90f0f;
+}
+.winner-msg {
+  background-color: #ffffff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 50;
+  border-radius: 10px;
+  width: max-content;
+  font-family: arial;
+  font-weight: bold;
+  font-size: 25;
+}
