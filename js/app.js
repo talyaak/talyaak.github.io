@@ -126,7 +126,7 @@ function createChessBoard(boardData) {
     // Refresh button - new game
     let button = document.createElement('button');
     button.setAttribute('onClick','location.reload()');
-    button.innerHTML = "Refresh & Restart";
+    button.innerHTML = "Restart";
     playingNow.classList.remove('playing-now');
     endContainer.appendChild(button);
   }
