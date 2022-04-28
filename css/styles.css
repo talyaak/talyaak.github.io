@@ -77,7 +77,7 @@ button:hover {
 }
 .dark-cell, .light-cell {
   width: 5vw;
-  height: 5vw;
+  height: 5.5vw;
 }
 
 .selected {
@@ -89,7 +89,7 @@ button:hover {
 .enemy {
   background-color: #e90f0f;
 }
-.winner-msg {
+.winner-msg, .start-button {
   background-color: #ffffff;
   position: absolute;
   left: 50%;
