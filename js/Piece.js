@@ -17,7 +17,7 @@ class Piece {
     }
     /* Get an array of possible moves of the piece
     given the limitations of the piece's location */ 
-    getPossibleMoves(boardData) {
+    getPossibleMoves(boardData) { // <- NOTICE: boardData seems "unread", only because of 'eval'
     //   Get relative moves
       let moves;
       const pieceType = this.type.charAt(0).toUpperCase() + this.type.slice(1);
@@ -67,20 +67,20 @@ class Piece {
       
       // Checks if cell "in front" of pawn is available
       let position = [this.row + direction, this.col];
-      if (boardData.isEmpty(position[0], position[1])) {
-        result.push(position);
-      }  
-  
-      // Shein's method:
-      // let position = [this.row + direction, this.col];
-      // let firstPos = [this.row + (direction*2), this.col];
-      // if (boardData.isEmpty(position[0], position[1]) && this.row !== 1 || boardData.isEmpty(position[0], position[1]) && this.row !== 6) {
-      //   result.push(position);
-      // }  
-      // if (boardData.isEmpty(position[0], position[1]) && this.row === 1 || boardData.isEmpty(position[0], position[1]) && this.row === 6) {
-      //   result.push(firstPos);
-      // }  
-  
+      let firstPos = [this.row + direction*2, this.col];
+      
+      // boolean variable - if cell "in front" is empty
+      const nextCellEmpty = boardData.isEmpty(position[0], position[1]);
+      // bolean variable - if cell (distance - 2 rows) is empty
+      const secondCellEmpty = boardData.isEmpty(firstPos[0], firstPos[1]);
+      
+      //bolean variable - Check if pawn is in first row (respective of color)
+      const moveTwo = nextCellEmpty && secondCellEmpty && (this.row === 1 || this.row === 6);  
+      //bolean variable - Check if pawn is in other rows row (respective of color)
+      const moveOne = nextCellEmpty && (this.row !== 1 || this.row !== 6);  
+
+      if (moveOne) {result.push(position);}
+      if (moveTwo) {result.push(firstPos);}  
   
       // Checks if there is an opponent in front of pawn, side 1
       position = [this.row + direction, this.col + direction];
