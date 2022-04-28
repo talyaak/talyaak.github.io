@@ -7,10 +7,12 @@ body {
   justify-content:flex-start;
   align-items:center ;
   min-height:100vh;
+  margin: 5px;
 
 }
 img {
   -webkit-user-drag: none;
+  height: 4.5vw;
 }
 table {
   margin: auto;
@@ -26,21 +28,10 @@ td {
 h1 {
   text-align: center;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 1vw;
-  margin: 1vw;
+  padding: 5px;
+  margin: 5px;
   font-size: 3vw;
 }
-/* button {
-  padding: 10px;
-  margin: 10px;
-  text-align: center;
-	font-family: arial;
-  font-size: 20px;
-  background-color: #cfdbeb;
-  border-color: #cfdbeb;
-  font-weight: bold;
-  font-size: xx-large;
-} */
 button {
   margin: 1rem;
   width: 30vw;
@@ -62,18 +53,14 @@ button {
 
 button:hover {
   background-color: #8ba2c0;
-  box-shadow: 0px 15px 20px #8ba2c0(46, 229, 156, 0.4);
-  /* color: #fff;
-  transform: translateY(-6px); */
+  box-shadow: 0px 15px 20px (46, 229, 156, 0.4);
 }
 .end-container {
   width: auto;
-
 }
 .playing-now {
   padding: 20px;
   margin: 10px;
-  /* width: 400px; */
   text-align: center;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 3vw;
@@ -88,9 +75,9 @@ button:hover {
 .dark-cell {
   background: #8ba2c0;
 }
-.dark-cell, .light-cell, img {
-  width: 4.5vw;
-  height: 4.5vw;
+.dark-cell, .light-cell {
+  width: 5vw;
+  height: 5vw;
 }
 
 .selected {
