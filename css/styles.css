@@ -76,7 +76,7 @@ button:hover {
   background: #8ba2c0;
 }
 .dark-cell, .light-cell {
-  width: 4vw;
+  min-width: 4vw;
   height: 5vw;
 }
 
@@ -89,7 +89,7 @@ button:hover {
 .enemy {
   background-color: #e90f0f;
 }
-.winner-msg, .start-button {
+.winner-msg {
   background-color: #ffffff;
   position: absolute;
   left: 50%;
@@ -103,4 +103,7 @@ button:hover {
   font-weight: bold;
   font-size: 2.5vw;
   display: inline-block;
+}
+.start-button {
+  margin-top: 25%;
 }
