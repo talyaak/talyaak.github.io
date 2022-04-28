@@ -81,11 +81,4 @@ class Game {
         app.js's createChessBoard(), adding a 'You Win!' popup
         Also will delete onCellClick's further actions */
     }
-
-    checkTest() {
-        // TODO: create an algorithm that calculates if any player's king is within reach
-        // tl;dr - CHECKMATE
-
-    }
-
 }
