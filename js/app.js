@@ -11,7 +11,7 @@ const QUEEN = 'queen';
 
 const CHESS_BOARD_ID = 'chess-board';
 
-let tableContainer, header, playingNow, winnerText="";
+let tableContainer, header, playingNow, winnerText="", endContainer;
 
 //Global variables - non-constants
 let game;
@@ -41,9 +41,6 @@ function onCellClick(row, col) {
         game.showMovesForPiece(row, col);
       }
     }
-    // TODO: Checkmate tester
-    game.checkTest();
-
 }
 
 
@@ -57,7 +54,10 @@ function _init() {
   tableContainer = document.createElement('div');
   document.body.appendChild(tableContainer);
   playingNow = document.createElement('div');
-  document.body.appendChild(playingNow);
+  endContainer = document.createElement('div');
+  endContainer.classList.add('end-container');
+  document.body.appendChild(endContainer);
+  endContainer.appendChild(playingNow);
   playingNow.classList.add("playing-now"); 
   
   /* boardData is a data storing object, BoardData() will
@@ -77,7 +77,7 @@ function createChessBoard(boardData) {
   table = document.createElement('table');
   table.id = CHESS_BOARD_ID;
   tableContainer.appendChild(table);
-  playingNow.innerHTML = "Currently playing: " + game.currentPlayer.toUpperCase();
+  playingNow.innerHTML = game.currentPlayer.toUpperCase() + " Team playing";
 
   for (let row = 0; row < BOARD_SIZE; row++) {
     const rowElement = table.insertRow();
@@ -113,8 +113,9 @@ function createChessBoard(boardData) {
     // Refresh button - new game
     let button = document.createElement('button');
     button.setAttribute('onClick','location.reload()');
-    button.innerHTML = "Start a new game"
-    playingNow.appendChild(button);
+    button.innerHTML = "Start a new game";
+    playingNow.classList.remove('playing-now');
+    endContainer.appendChild(button);
   }
 }
 
