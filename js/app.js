@@ -1,4 +1,5 @@
 // Global variables - constants
+let startedGame = false;
 const BOARD_SIZE = 8;
 const WHITE_PLAYER = 'white';
 const BLACK_PLAYER = 'black';
@@ -11,7 +12,7 @@ const QUEEN = 'queen';
 
 const CHESS_BOARD_ID = 'chess-board';
 
-let tableContainer, header, playingNow, winnerText="", endContainer;
+let startButton, tableContainer, header, playingNow, winnerText="", endContainer;
 
 //Global variables - non-constants
 let game;
@@ -45,9 +46,20 @@ function onCellClick(row, col) {
 
 
 /* Called upon after the HTML 'load' event
-Kickstarts creation of the Chess board*/
+Creates a start button*/
 function _init() {
+  startButton = document.createElement('button');
+  startButton.setAttribute('onClick','gameStarter()');
+  startButton.classList.add("start-button");
+  startButton.innerText = "Let's play chess";
+  document.body.appendChild(startButton);
+  
+}
+
+// Called upon after start button click
+function gameStarter() {
   // HTML manipulation - written text
+  document.body.removeChild(startButton);
   header = document.createElement('h1');
   header.innerHTML = "Chess Game";
   document.body.appendChild(header);
@@ -61,11 +73,10 @@ function _init() {
   playingNow.classList.add("playing-now"); 
   
   /* boardData is a data storing object, BoardData() will
-   receive the initial chess pieces as an array */
+  receive the initial chess pieces as an array */
   game = new Game();
   createChessBoard(game.boardData);
 }
-
 // Creates table, configures it as Chess board
 function createChessBoard(boardData) {
   table = document.getElementById(CHESS_BOARD_ID);
@@ -93,15 +104,17 @@ function createChessBoard(boardData) {
     }
   }
   
-  // Add pieces images to board
+    // Add pieces images to board
   for (let piece of boardData.pieces) {
     const cell = table.rows[piece.row].cells[piece.col];
     addImage(cell, piece.player, piece.type);
   }
 
+  // Creating the "win" popup
   const winnerMsg = document.createElement('div');
   winnerMsg.textContent = winnerText;
   table.appendChild(winnerMsg);
+  
   // When a winner is announced, this block is executed
   if (winnerMsg.textContent !== "") {
     winnerMsg.classList.add('winner-msg');
@@ -113,7 +126,7 @@ function createChessBoard(boardData) {
     // Refresh button - new game
     let button = document.createElement('button');
     button.setAttribute('onClick','location.reload()');
-    button.innerHTML = "Start a new game";
+    button.innerHTML = "Refresh & Restart";
     playingNow.classList.remove('playing-now');
     endContainer.appendChild(button);
   }
