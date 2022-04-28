@@ -1,14 +1,15 @@
+// Game is the class that handles rules of chess
 class Game {
     constructor() {
-      this.boardData = new BoardData();
-      this.currentPlayer = WHITE_PLAYER;
+        this.boardData = new BoardData();
+        this.currentPlayer = WHITE_PLAYER;
     }
 
     /* Clicking on any cell/piece will result in calling this function
     The cell wil be 'selected' with a unique color. Also: cells that
     the Chess piece can move towards/are enemies - will be given another color*/
     showMovesForPiece(row, col) {
-        // Clear all previous possible moves and selected
+        // Clear all previous possible moves, selected and enemy
         for (let i = 0; i < BOARD_SIZE; i++) {
             for (let j = 0; j < BOARD_SIZE; j++) {
                 table.rows[i].cells[j].classList.remove('possible-move');
@@ -16,7 +17,7 @@ class Game {
                 table.rows[i].cells[j].classList.remove('enemy');
             }
         }
-        
+
         // Using boardData to gain information
         const piece = this.boardData.getPiece(row, col);
         // Acquiring possible moves and giving them a color
@@ -32,7 +33,7 @@ class Game {
                 cell.classList.add('possible-move');
             }
         }
-        
+
         // Giving the selected piece's cell a color
         table.rows[row].cells[col].classList.add('selected');
         selectedPiece = piece;
@@ -44,16 +45,16 @@ class Game {
         const possibleMoves = this.getPossibleMoves(piece);
         // possibleMoves looks like this: [[1,2], [3,2]]
         for (const possibleMove of possibleMoves) {
-        // possibleMove looks like this: [1,2]
-            
+            // possibleMove looks like this: [1,2]
+
             if (possibleMove[0] === row && possibleMove[1] === col) {
                 // There is a legal move
                 // If new (row,col) cell had enemy, enemy piece is removed 
                 const removedPiece = this.boardData.getPiece(row, col);
                 this.boardData.removePiece(row, col);
-                if (removedPiece !== undefined && removedPiece.type === KING){
+                if (removedPiece !== undefined && removedPiece.type === KING) {
                     this.winnerAnnounce(removedPiece);
-                } 
+                }
                 piece.row = row;
                 piece.col = col;
                 this.currentPlayer = piece.getOpponent();
@@ -67,11 +68,11 @@ class Game {
         /* 'if' block executed only when selected piece isn't current
         player's piece, or when a winner has been chosen*/
         if (this.currentPlayer !== piece.player) {
-            return [];
+            return []; // No possible moves
         }
         return piece.getPossibleMoves(this.boardData);
     }
-    
+
     winnerAnnounce(removedPiece) {
         let winnerStr = removedPiece.getOpponent();
         winnerStr = winnerStr.charAt(0).toUpperCase() + winnerStr.slice(1);

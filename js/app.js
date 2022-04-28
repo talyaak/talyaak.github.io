@@ -12,7 +12,7 @@ const QUEEN = 'queen';
 
 const CHESS_BOARD_ID = 'chess-board';
 
-let startButton, tableContainer, header, playingNow, winnerText="", endContainer;
+let startButton, tableContainer, header, playingNow, winnerText = "", endContainer;
 
 //Global variables - non-constants
 let game;
@@ -31,17 +31,17 @@ function addImage(cell, player, name) {
 
 // When cells are clicked - this function starts
 function onCellClick(row, col) {
-    // first case click scenario (for first move)
-    if (selectedPiece === undefined) {
+  // first case click scenario (for first move)
+  if (selectedPiece === undefined) {
+    game.showMovesForPiece(row, col);
+  } else {
+    if (game.tryMove(selectedPiece, row, col)) { // this represents MOVEMENT of piece
+      selectedPiece = undefined; // going back to first case scenario
+      createChessBoard(game.boardData); // Recreate board - doesn't affect UX
+    } else { // this represents clicking on non-'possible-move' cell
       game.showMovesForPiece(row, col);
-    } else {
-      if (game.tryMove(selectedPiece, row, col)) { // this represents MOVEMENT of piece
-        selectedPiece = undefined; // going back to first case scenario
-        createChessBoard(game.boardData); // Recreate board - doesn't affect UX
-      } else { // this represents clicking on non-'possible-move' cell
-        game.showMovesForPiece(row, col);
-      }
     }
+  }
 }
 
 
@@ -49,11 +49,11 @@ function onCellClick(row, col) {
 Creates a start button*/
 function _init() {
   startButton = document.createElement('button');
-  startButton.setAttribute('onClick','gameStarter()');
+  startButton.setAttribute('onClick', 'gameStarter()');
   startButton.classList.add("start-button");
   startButton.innerText = "Let's play chess";
   document.body.appendChild(startButton);
-  
+
 }
 
 // Called upon after start button click
@@ -70,8 +70,8 @@ function gameStarter() {
   endContainer.classList.add('end-container');
   document.body.appendChild(endContainer);
   endContainer.appendChild(playingNow);
-  playingNow.classList.add("playing-now"); 
-  
+  playingNow.classList.add("playing-now");
+
   /* boardData is a data storing object, BoardData() will
   receive the initial chess pieces as an array */
   game = new Game();
@@ -103,8 +103,8 @@ function createChessBoard(boardData) {
       cell.addEventListener('click', () => onCellClick(row, col));
     }
   }
-  
-    // Add pieces images to board
+
+  // Add pieces images to board
   for (let piece of boardData.pieces) {
     const cell = table.rows[piece.row].cells[piece.col];
     addImage(cell, piece.player, piece.type);
@@ -114,18 +114,18 @@ function createChessBoard(boardData) {
   const winnerMsg = document.createElement('div');
   winnerMsg.textContent = winnerText;
   table.appendChild(winnerMsg);
-  
+
   // When a winner is announced, this block is executed
   if (winnerMsg.textContent !== "") {
     winnerMsg.classList.add('winner-msg');
-    playingNow.innerHTML="";
+    playingNow.innerHTML = "";
     /* After winner is declared, no need for onCellClick
     It's now redefined as an empty function*/
-    onCellClick = function(){}
-    
+    onCellClick = function () { }
+
     // Refresh button - new game
     let button = document.createElement('button');
-    button.setAttribute('onClick','location.reload()');
+    button.setAttribute('onClick', 'location.reload()');
     button.innerHTML = "Restart";
     playingNow.classList.remove('playing-now');
     endContainer.appendChild(button);

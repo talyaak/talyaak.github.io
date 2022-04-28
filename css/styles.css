@@ -1,42 +1,48 @@
 body {
-  background-color:#ffffff;
+  background-color: #ffffff;
   user-select: none;
   height: max-content;
   width: auto;
-  display:flex; flex-direction:column; 
-  justify-content:flex-start;
-  align-items:center ;
-  min-height:100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
   margin: 5px;
 
 }
+
 img {
   -webkit-user-drag: none;
   height: 4.5vw;
 }
+
 table {
   margin: auto;
   border-collapse: collapse;
   position: relative;
 }
+
 table,
 th,
 td {
-    border: 1px solid black;
-    text-align: center;
+  border: 1px solid black;
+  text-align: center;
 }
+
 h1 {
   text-align: center;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 5px;
   margin: 5px;
   font-size: 3vw;
 }
+
 button {
   margin: 1rem;
   width: 30vw;
   height: 6vw;
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 2vw;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -49,20 +55,22 @@ button {
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
-  }
+}
 
 button:hover {
   background-color: #8ba2c0;
   box-shadow: 0px 15px 20px (46, 229, 156, 0.4);
 }
+
 .end-container {
   width: auto;
 }
+
 .playing-now {
   padding: 20px;
   margin: 10px;
   text-align: center;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 3vw;
   background: #cfdbeb;
   font-weight: 650;
@@ -72,10 +80,13 @@ button:hover {
 .light-cell {
   background: #cfdbeb;
 }
+
 .dark-cell {
   background: #8ba2c0;
 }
-.dark-cell, .light-cell {
+
+.dark-cell,
+.light-cell {
   min-width: 4vw;
   height: 5vw;
 }
@@ -83,12 +94,15 @@ button:hover {
 .selected {
   background-color: #414040;
 }
+
 .possible-move {
   background-color: #ea983a;
 }
+
 .enemy {
   background-color: #e90f0f;
 }
+
 .winner-msg {
   background-color: #ffffff;
   position: absolute;
@@ -104,6 +118,7 @@ button:hover {
   font-size: 2.5vw;
   display: inline-block;
 }
+
 .start-button {
   margin-top: 25%;
 }
