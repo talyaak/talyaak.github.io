@@ -13,11 +13,14 @@ const QUEEN = 'queen';
 const CHESS_BOARD_ID = 'chess-board';
 
 let startButton, tableContainer, header, playingNow, winnerText = "", endContainer;
+dangerText = "";
+let currentStatus = "Playing";
 
 //Global variables - non-constants
 let game;
 let table;
 let selectedPiece;
+let gameStatus;
 
 /* Creates an img element according to the parameters
 it received, appends it to the cell */
@@ -28,18 +31,21 @@ function addImage(cell, player, name) {
 }
 
 
-
 // When cells are clicked - this function starts
 function onCellClick(row, col) {
+  gameStatus.innerHTML = "Game Status: " + currentStatus;
   // first case click scenario (for first move)
   if (selectedPiece === undefined) {
+    console.log("onCellClick, instance 1");
     game.showMovesForPiece(row, col);
-  } else {
+  } else { // a piece is already selected
     if (game.tryMove(selectedPiece, row, col)) { // this represents MOVEMENT of piece
       selectedPiece = undefined; // going back to first case scenario
       createChessBoard(game.boardData); // Recreate board - doesn't affect UX
+      console.log("onCellClick, instance 2");
     } else { // this represents clicking on non-'possible-move' cell
       game.showMovesForPiece(row, col);
+      console.log("onCellClick, instance 3");
     }
   }
 }
@@ -59,10 +65,9 @@ function _init() {
 // Called upon after start button click
 function gameStarter() {
   // HTML manipulation - written text
+  gameStatus = document.getElementById("game-status");
+  gameStatus.innerHTML = "Game Status: " + currentStatus;
   document.body.removeChild(startButton);
-  header = document.createElement('h1');
-  header.innerHTML = "Chess Game";
-  document.body.appendChild(header);
   tableContainer = document.createElement('div');
   document.body.appendChild(tableContainer);
   playingNow = document.createElement('div');
@@ -88,7 +93,7 @@ function createChessBoard(boardData) {
   table = document.createElement('table');
   table.id = CHESS_BOARD_ID;
   tableContainer.appendChild(table);
-  playingNow.innerHTML = game.currentPlayer.toUpperCase() + " Team playing";
+  playingNow.innerHTML = game.currentPlayer.toUpperCase() + " Team's turn";
 
   for (let row = 0; row < BOARD_SIZE; row++) {
     const rowElement = table.insertRow();
@@ -108,15 +113,17 @@ function createChessBoard(boardData) {
   for (let piece of boardData.pieces) {
     const cell = table.rows[piece.row].cells[piece.col];
     addImage(cell, piece.player, piece.type);
-  }
+  }  
 
   // Creating the "win" popup
-  const winnerMsg = document.createElement('div');
+  let winnerMsg = document.createElement('div')
   winnerMsg.textContent = winnerText;
   table.appendChild(winnerMsg);
+  
 
   // When a winner is announced, this block is executed
   if (winnerMsg.textContent !== "") {
+    gameStatus.innerHTML = "GAME OVER";
     winnerMsg.classList.add('winner-msg');
     playingNow.innerHTML = "";
     /* After winner is declared, no need for onCellClick

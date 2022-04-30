@@ -3,6 +3,7 @@ class Game {
     constructor() {
         this.boardData = new BoardData();
         this.currentPlayer = WHITE_PLAYER;
+        this.checkStatus = false; // If there is a "check" status ingame
     }
 
     /* Clicking on any cell/piece will result in calling this function
@@ -41,7 +42,7 @@ class Game {
 
     // Tries to actually make a move, returns true if successful.
     tryMove(piece, row, col) {
-        console.log("player: " + this.currentPlayer);
+        console.log("tryMove()\nplayer: " + this.currentPlayer);
         const possibleMoves = this.getPossibleMoves(piece);
         // possibleMoves looks like this: [[1,2], [3,2]]
         for (const possibleMove of possibleMoves) {
@@ -57,6 +58,15 @@ class Game {
                 }
                 piece.row = row;
                 piece.col = col;
+                if(this.checkKingDanger()) {
+                    gameStatus.innerHTML = "Game Status: Check";
+                    currentStatus = "Check";
+                       
+                }
+                else {
+                    gameStatus.innerHTML = "Game Status: Playing";
+                    currentStatus = "Playing";  
+                }
                 this.currentPlayer = piece.getOpponent();
                 return true;
             }
@@ -74,6 +84,7 @@ class Game {
     }
 
     winnerAnnounce(removedPiece) {
+        
         let winnerStr = removedPiece.getOpponent();
         winnerStr = winnerStr.charAt(0).toUpperCase() + winnerStr.slice(1);
         //winnerText - global from app.js
@@ -81,5 +92,27 @@ class Game {
         /* The above action will start an 'if' statement in
         app.js's createChessBoard(), adding a 'You Win!' popup
         Also will delete onCellClick's further actions */
+    }
+
+    /* Goes through every piece in board data, check if any 
+    of the pieces holds danger upon the opponent's king - CHECK*/
+    checkKingDanger() {
+        let tempPieces = this.boardData.pieces;
+        for (let tempPiece of tempPieces) {
+            let possibleMoves = tempPiece.getPossibleMoves(this.boardData);
+            for (let possibleMove of possibleMoves) {
+                let tempPossibleMove = this.boardData.getPiece(possibleMove[0], possibleMove[1]);
+                if (tempPossibleMove !== undefined) {
+                    if (tempPossibleMove.type === KING) {
+                        // alert("CHECK, test\n"
+                        // + tempPossibleMove.player
+                        // + " team is threatned");
+                        // dangerText = toString(tempPossibleMove.player)
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
