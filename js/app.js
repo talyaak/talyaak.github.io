@@ -1,143 +1,161 @@
 // Global variables - constants
-let startedGame = false;
 const BOARD_SIZE = 8;
 const WHITE_PLAYER = 'white';
 const BLACK_PLAYER = 'black';
-const PAWN = 'pawn';
-const ROOK = 'rook';
-const KNIGHT = 'knight';
-const BISHOP = 'bishop';
-const KING = 'king';
-const QUEEN = 'queen';
+const CHECKERS_BOARD_ID = 'checkers-board';
 
-const CHESS_BOARD_ID = 'chess-board';
+// Global variables - non-constants
+let board, boardContainer, game, selectedPiece, winnerAnnounce = "", winner;
+let authorizedPieces = []; // <- An array that holds pieces which are allowed to move
+let currentDoubleJumper; // <- in case of existing Jumper - is held in this variable
+let button; // undefined restart button for end-of-game
 
-let startButton, tableContainer, header, playingNow, winnerText = "", endContainer;
-dangerText = "";
-let currentStatus = "Playing";
-
-//Global variables - non-constants
-let game;
-let table;
-let selectedPiece;
-let gameStatus;
-
-/* Creates an img element according to the parameters
-it received, appends it to the cell */
-function addImage(cell, player, name) {
-  const image = document.createElement('img');
-  image.src = 'images/' + player + '/' + name + '.png';
-  cell.appendChild(image);
-}
-
-
-// When cells are clicked - this function starts
-function onCellClick(row, col) {
-  gameStatus.innerHTML = "Game Status: " + currentStatus;
-  // first case click scenario (for first move)
-  if (selectedPiece === undefined) {
-    console.log("onCellClick, instance 1");
-    game.showMovesForPiece(row, col);
-  } else { // a piece is already selected
-    if (game.tryMove(selectedPiece, row, col)) { // this represents MOVEMENT of piece
-      selectedPiece = undefined; // going back to first case scenario
-      createChessBoard(game.boardData); // Recreate board - doesn't affect UX
-      console.log("onCellClick, instance 2");
-    } else { // this represents clicking on non-'possible-move' cell
-      game.showMovesForPiece(row, col);
-      console.log("onCellClick, instance 3");
-    }
-  }
-}
-
-
-/* Called upon after the HTML 'load' event
-Creates a start button*/
 function _init() {
-  startButton = document.createElement('button');
-  startButton.setAttribute('onClick', 'gameStarter()');
-  startButton.classList.add("start-button");
-  startButton.innerText = "Let's play chess";
-  document.body.appendChild(startButton);
-
+    boardContainer = document.getElementById('checkerboard-container');
+    startButton = document.createElement('button');
+    startButton.setAttribute('onClick', 'renderGame()');
+    startButton.classList.add("start-button");
+    startButton.innerText = "Let's play Checkers";
+    boardContainer.appendChild(startButton);
 }
 
-// Called upon after start button click
-function gameStarter() {
-  // HTML manipulation - written text
-  gameStatus = document.getElementById("game-status");
-  gameStatus.innerHTML = "Game Status: " + currentStatus;
-  document.body.removeChild(startButton);
-  tableContainer = document.createElement('div');
-  document.body.appendChild(tableContainer);
-  playingNow = document.createElement('div');
-  endContainer = document.createElement('div');
-  endContainer.classList.add('end-container');
-  document.body.appendChild(endContainer);
-  endContainer.appendChild(playingNow);
-  playingNow.classList.add("playing-now");
-
-  /* boardData is a data storing object, BoardData() will
-  receive the initial chess pieces as an array */
-  game = new Game();
-  createChessBoard(game.boardData);
+// Runs after HTML Load
+function renderGame() {
+    game = new Game();
+    endContainer = document.createElement('div');
+    endContainer.classList.add('end-container');
+    document.body.appendChild(endContainer);
+    createCheckersBoard();
+    removeChild(startButton);
 }
-// Creates table, configures it as Chess board
-function createChessBoard(boardData) {
-  table = document.getElementById(CHESS_BOARD_ID);
-  if (table !== null) {
-    table.remove();
-  }
 
-  // Create empty chess board inside the HTML file:
-  table = document.createElement('table');
-  table.id = CHESS_BOARD_ID;
-  tableContainer.appendChild(table);
-  playingNow.innerHTML = game.currentPlayer.toUpperCase() + " Team's turn";
+// Creates the Checkers board, runs after _init(), runs after every time BoardData is updated
+function createCheckersBoard() {
 
-  for (let row = 0; row < BOARD_SIZE; row++) {
-    const rowElement = table.insertRow();
-    for (let col = 0; col < BOARD_SIZE; col++) {
-      const cell = rowElement.insertCell();
-      if ((row + col) % 2 === 0) {
-        cell.className = 'light-cell';
-      } else {
-        cell.className = 'dark-cell';
-      }
-      // eventListener that calls onCellClick() after clicking on each cell
-      cell.addEventListener('click', () => onCellClick(row, col));
+    /* Two functions in Game() that run in the background, after every piece movement
+    checkForWinner is self-explanatory, checkForShowdown helps us decide which pieces
+    are allowed to move at every turn*/
+    game.checkForWinner();
+    game.checkForShowdown(currentDoubleJumper);
+
+    // Creating/recreating the board (createCheckersBoard runs anew with every 'click')
+    board = document.getElementById(CHECKERS_BOARD_ID);
+    if (board !== null) {
+        board.remove();
     }
-  }
 
-  // Add pieces images to board
-  for (let piece of boardData.pieces) {
-    const cell = table.rows[piece.row].cells[piece.col];
-    addImage(cell, piece.player, piece.type);
-  }  
 
-  // Creating the "win" popup
-  let winnerMsg = document.createElement('div')
-  winnerMsg.textContent = winnerText;
-  table.appendChild(winnerMsg);
-  
 
-  // When a winner is announced, this block is executed
-  if (winnerMsg.textContent !== "") {
-    gameStatus.innerHTML = "GAME OVER";
-    winnerMsg.classList.add('winner-msg');
-    playingNow.innerHTML = "";
-    /* After winner is declared, no need for onCellClick
-    It's now redefined as an empty function*/
-    onCellClick = function () { }
+    /* Creating the table that will eventually become our game-board */
+    board = document.createElement('table');
+    board.id = CHECKERS_BOARD_ID;
 
-    // Refresh button - new game
-    let button = document.createElement('button');
-    button.setAttribute('onClick', 'location.reload()');
-    button.innerHTML = "Restart";
-    playingNow.classList.remove('playing-now');
-    endContainer.appendChild(button);
-  }
+    // boardContainer - father element of the game-board in the HTML
+    boardContainer.innerText = "Currently Playing: " + game.currentPlayer + " team\nScore:\nBlack: "
+        + game.blackTeamScore + "\nWhite: " + game.whiteTeamScore + "\n";
+    boardContainer.appendChild(board);
+
+    /* Creating a table - size 8X8 */
+    for (let row = 0; row < BOARD_SIZE; row++) {
+        const rowElement = board.insertRow();
+        for (let col = 0; col < BOARD_SIZE; col++) {
+            const square = rowElement.insertCell();
+            if ((row + col) % 2 === 0) {
+                square.className = 'light-cell';
+            } else { square.className = 'dark-cell'; }
+            square.addEventListener('click', () => onSquareClick(row, col));
+        }
+    }
+    // Adding images to every square that holds a checkers piece
+    // When a piece is authorized to move, adds "glow" to piece
+    for (let piece of game.boardData.pieces) {
+        const square = board.rows[piece.row].cells[piece.col];
+        if (authorizedPieces.includes(piece) && game.currentPlayer === piece.player) {
+            addImage(square, piece, true);
+        }
+        else { addImage(square, piece, false); }
+
+    }
+
+    // A Popup message that will appear when a winner is declared
+    let winnerMsg = document.createElement('div')
+    if (winnerAnnounce !== "") {
+        winnerMsg.textContent = winnerAnnounce;
+        board.appendChild(winnerMsg);
+        winnerMsg.classList.add('winner-msg');
+        for (let element of document.body.getElementsByTagName("img")) {
+            element.classList.remove("piece"); // remove css cursor pointer
+            // Refresh button - new game
+        }
+        if (button === undefined) { // Restart button
+            button = document.createElement('button');
+            button.setAttribute('onClick', 'location.reload()');
+            button.innerHTML = "Restart";
+            endContainer.appendChild(button);
+        }
+    }
 }
 
-// After the HTML is loaded, createChessBoard() is called
+// Runs after each time a table square is clicked
+function onSquareClick(row, col) {
+
+    /* Creating boolean statements that will help us determine how the
+    function will work depending on the board and pieces */
+    let authCheck;
+    if (game.boardData.isPlayer(row, col, game.currentPlayer)) {
+        const tempPiece = game.boardData.getPiece(row, col);
+
+        // authCheck - boolean expression (true - tempPiece is authorized to move)
+        authCheck = authorizedPieces.includes(tempPiece);
+    }
+
+    // emptyCell - boolean expression (true - square[row,col] is empty)
+    const emptyCell = game.boardData.isEmpty(row, col);
+
+    // first case click-scenario (first click/non-move)
+    // if statement to prevent onSquareClick for unauthorized player
+    if (selectedPiece === undefined && (authCheck || emptyCell)) {
+        console.log("test 1");
+        game.showMoves(row, col);
+
+        // Not a first-click scenario, It's a try-to-move scenario
+    } else if (selectedPiece !== undefined && (authCheck || emptyCell)) {
+
+        // true - we can move the piece to [row,col], and we did
+        if (game.tryMove(selectedPiece, row, col)) {
+            console.log("test 2");
+
+            // if block: true - double/triple/etc jump has ended, reset variables
+            if (authorizedPieces.length === 1 && !game.enemyCheck(currentDoubleJumper)) {
+                authorizedPieces = game.boardData.pieces;
+                currentDoubleJumper = undefined;
+            }
+
+            selectedPiece = undefined;
+            createCheckersBoard(); // Revamping the Checkers board since a change has been made
+
+        } else { // can't move piece, show selected cell's possibleMoves
+            console.log("test 3");
+            game.showMoves(row, col);
+        }
+    } else { console.log("not your turn/empty cell"); } // for testing
+}
+
+
+// Adds an image according to parameters
+function addImage(cell, piece, glow) {
+    const image = document.createElement('img');
+    image.classList.add("piece"); // Css class, cursor pointer
+
+    // Given Queen status, appointed relevant img 
+    if (piece.queenStatus) {
+        image.src = "images/" + piece.player + "/king.png"
+    } else { image.src = "images/" + piece.player + "/pawn.png" }
+
+    // glow - boolean expression: True - currentPlayer's pieces (they will glow in-game for)
+    if (glow) { image.classList.add('glow'); }
+    cell.appendChild(image);
+}
+
+// After the HTML is loaded, createCheckerboard() is called
 window.addEventListener('load', _init);
